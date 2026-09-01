@@ -7,7 +7,7 @@ Type=simple
 User=portfolio
 WorkingDirectory=/opt/portfolio
 ExecStart=/usr/bin/java -jar /opt/portfolio/portfolio-1.0.0.jar
-Environment=PORT=8080
+Environment=PORT=8081
 Environment=ADMIN_USERNAME=admin
 Environment=ADMIN_PASSWORD=change-this-password
 Environment=UPLOAD_DIR=/opt/portfolio/data/uploads

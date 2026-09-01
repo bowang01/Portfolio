@@ -8,6 +8,6 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 RUN mkdir -p /app/data/uploads
 COPY --from=build /src/target/portfolio-1.0.0.jar /app/app.jar
-ENV PORT=8080
-EXPOSE 8080
+ENV PORT=8081
+EXPOSE 8081
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "/app/app.jar"]

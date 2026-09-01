@@ -21,9 +21,9 @@ services:
   app:
     build: .
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
-      PORT: "8080"
+      PORT: "8081"
       DB_URL: jdbc:mysql://mysql:3306/portfolio?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=UTC
       DB_USERNAME: portfolio
       DB_PASSWORD: ${MYSQL_PASSWORD:-portfolio}
