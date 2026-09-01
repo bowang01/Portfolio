@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Projects')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="admin">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Dashboard</p>
+            <h1>Projects</h1>
+        </div>
+        <div class="actions">
+            <a class="btn" th:href="@{/admin/projects/new}">New project</a>
+            <a class="btn btn-ghost" th:href="@{/admin/settings}">Site settings</a>
+            <form th:action="@{/admin/logout}" method="post">
+                <button class="btn btn-ghost" type="submit">Log out</button>
+            </form>
+        </div>
+    </div>
+
+    <p class="flash" th:if="${message}" th:text="${message}">Saved</p>
+
+    <div class="table-wrap" th:if="${!projects.isEmpty()}">
+        <table>
+            <thead>
+            <tr>
+                <th>Project</th>
+                <th>Tags</th>
+                <th>Order</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="project : ${projects}">
+                <td>
+                    <strong th:text="${project.title}">Title</strong>
+                    <div class="muted" th:text="${project.summary}">Summary</div>
+                </td>
+                <td th:text="${project.tags}">tags</td>
+                <td th:text="${project.sortOrder}">0</td>
+                <td class="row-actions">
+                    <a th:href="@{/projects/{id}(id=${project.id})}">View</a>
+                    <a th:href="@{/admin/projects/{id}/edit(id=${project.id})}">Edit</a>
+                    <form th:action="@{/admin/projects/{id}/delete(id=${project.id})}" method="post" onsubmit="return confirm('Delete this project?');">
+                        <button type="submit" class="link-btn danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty" th:if="${projects.isEmpty()}">
+        <p>No projects yet. Create the first one.</p>
+        <a class="btn" th:href="@{/admin/projects/new}">New project</a>
+    </div>
+</main>
+</body>
+</html>

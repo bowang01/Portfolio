@@ -1,0 +1,42 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: portfolio
+      MYSQL_USER: portfolio
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-portfolio}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-portfolio_root}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      DB_URL: jdbc:mysql://mysql:3306/portfolio?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=UTC
+      DB_USERNAME: portfolio
+      DB_PASSWORD: ${MYSQL_PASSWORD:-portfolio}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      UPLOAD_DIR: /app/data/uploads
+    volumes:
+      - uploads:/app/data/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  uploads:

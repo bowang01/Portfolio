@@ -1,0 +1,53 @@
+CREATE DATABASE IF NOT EXISTS portfolio
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+USE portfolio;
+
+CREATE TABLE IF NOT EXISTS projects (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  summary VARCHAR(500) NOT NULL,
+  description TEXT NOT NULL,
+  cover_image VARCHAR(255) DEFAULT NULL,
+  tags VARCHAR(255) DEFAULT NULL,
+  live_url VARCHAR(255) DEFAULT NULL,
+  github_url VARCHAR(255) DEFAULT NULL,
+  test_notes TEXT DEFAULT NULL,
+  sort_order INT NOT NULL,
+  created_at DATETIME(6) DEFAULT NULL,
+  updated_at DATETIME(6) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS site_settings (
+  id BIGINT NOT NULL,
+  display_name VARCHAR(255) NOT NULL,
+  tagline VARCHAR(255) NOT NULL,
+  bio TEXT NOT NULL,
+  email VARCHAR(255) DEFAULT NULL,
+  github_url VARCHAR(255) DEFAULT NULL,
+  footer_text VARCHAR(255) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS project_accounts (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  role_name VARCHAR(255) DEFAULT NULL,
+  username VARCHAR(255) DEFAULT NULL,
+  password VARCHAR(255) DEFAULT NULL,
+  notes VARCHAR(255) DEFAULT NULL,
+  project_id BIGINT DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY idx_project_accounts_project (project_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS project_endpoints (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  method VARCHAR(255) DEFAULT NULL,
+  url VARCHAR(255) DEFAULT NULL,
+  description VARCHAR(255) DEFAULT NULL,
+  project_id BIGINT DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY idx_project_endpoints_project (project_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

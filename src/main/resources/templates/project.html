@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${project.title})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main>
+    <article class="detail">
+        <a class="back-link" th:href="@{/}">Back to home</a>
+
+        <div class="detail-hero">
+            <div class="detail-cover">
+                <img th:if="${project.coverImage}" th:src="${project.coverImage}" th:alt="${project.title}">
+                <div class="cover-fallback large" th:unless="${project.coverImage}" th:text="${#strings.substring(project.title,0,1)}"></div>
+            </div>
+            <div>
+                <div class="tags" th:if="${!project.tagList().isEmpty()}">
+                    <span th:each="tag : ${project.tagList()}" th:text="${tag}">Tag</span>
+                </div>
+                <h1 th:text="${project.title}">Project</h1>
+                <p class="lede" th:text="${project.summary}">Summary</p>
+                <div class="actions">
+                    <a class="btn" th:if="${project.liveUrl}" th:href="${project.liveUrl}" target="_blank" rel="noreferrer">Open site</a>
+                    <a class="btn btn-ghost" th:if="${project.githubUrl}" th:href="${project.githubUrl}" target="_blank" rel="noreferrer">View code</a>
+                    <a class="btn btn-ghost" th:if="${loggedIn}" th:href="@{/admin/projects/{id}/edit(id=${project.id})}">Edit project</a>
+                </div>
+            </div>
+        </div>
+
+        <section class="panel">
+            <h2>About</h2>
+            <p class="prose" th:text="${project.description}">Description</p>
+        </section>
+
+        <section class="panel" id="testdata">
+            <h2>Test data</h2>
+            <p class="muted">These accounts and endpoints are for demo use only. Do not use them in production.</p>
+
+            <h3>Test accounts</h3>
+            <div class="table-wrap" th:if="${!project.testAccounts.isEmpty()}">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Username</th>
+                        <th>Password</th>
+                        <th>Notes</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="account : ${project.testAccounts}">
+                        <td th:text="${account.roleName}">Role</td>
+                        <td>
+                            <code th:text="${account.username}">user</code>
+                            <button type="button" class="copy" th:attr="data-copy=${account.username}">Copy</button>
+                        </td>
+                        <td>
+                            <code th:text="${account.password}">pass</code>
+                            <button type="button" class="copy" th:attr="data-copy=${account.password}">Copy</button>
+                        </td>
+                        <td th:text="${account.notes}">Notes</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="muted" th:if="${project.testAccounts.isEmpty()}">No test accounts yet.</p>
+
+            <h3>Endpoints</h3>
+            <div class="table-wrap" th:if="${!project.testEndpoints.isEmpty()}">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Path</th>
+                        <th>Notes</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${project.testEndpoints}">
+                        <td><span class="method" th:text="${item.method}">GET</span></td>
+                        <td><code th:text="${item.url}">/</code></td>
+                        <td th:text="${item.description}">Notes</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="muted" th:if="${project.testEndpoints.isEmpty()}">No test endpoints yet.</p>
+
+            <div class="notes" th:if="${project.testNotes}">
+                <h3>How to try it</h3>
+                <p class="prose" th:text="${project.testNotes}">Notes</p>
+            </div>
+        </section>
+    </article>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<script th:src="@{/js/copy.js}"></script>
+</body>
+</html>

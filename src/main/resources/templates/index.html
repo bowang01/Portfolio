@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Home')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main>
+    <section class="hero">
+        <p class="eyebrow">Portfolio</p>
+        <h1 th:text="${site.tagline}">Turning ideas into products you can open</h1>
+        <p class="lede" th:text="${site.bio}">Project intro</p>
+    </section>
+
+    <section class="section">
+        <div class="section-head">
+            <h2>Work</h2>
+            <p class="muted" th:text="${projects.size()} + ' projects'">0 projects</p>
+        </div>
+
+        <div class="project-grid" th:if="${!projects.isEmpty()}">
+            <article class="project-card" th:each="project : ${projects}">
+                <a class="card-cover" th:href="@{/projects/{id}(id=${project.id})}">
+                    <img th:if="${project.coverImage}" th:src="${project.coverImage}" th:alt="${project.title}">
+                    <div class="cover-fallback" th:unless="${project.coverImage}" th:text="${#strings.substring(project.title,0,1)}"></div>
+                </a>
+                <div class="card-body">
+                    <h3>
+                        <a th:href="@{/projects/{id}(id=${project.id})}" th:text="${project.title}">Title</a>
+                    </h3>
+                    <div class="card-meta" th:if="${!project.tagList().isEmpty()}">
+                        <p class="card-label">Tech stack</p>
+                        <div class="tags">
+                            <span th:each="tag : ${project.tagList()}" th:text="${tag}">Tag</span>
+                        </div>
+                    </div>
+                    <p class="card-summary" th:text="${project.summary}">Summary</p>
+                    <a class="btn card-btn" th:href="@{/projects/{id}(id=${project.id})}">View details</a>
+                </div>
+            </article>
+        </div>
+
+        <div class="empty" th:if="${projects.isEmpty()}">
+            <p>No projects yet. Log in to add one.</p>
+            <a class="btn" th:href="@{/admin/login}">Log in</a>
+        </div>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

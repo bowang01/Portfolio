@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Page not found')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+<main class="hero">
+    <p class="eyebrow">Error</p>
+    <h1>Page not found</h1>
+    <p class="lede">This address has no content. The project may have been removed.</p>
+    <a class="btn" th:href="@{/}">Back to home</a>
+</main>
+</body>
+</html>

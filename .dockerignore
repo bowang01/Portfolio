@@ -1,0 +1,11 @@
+target
+data
+.git
+.github
+.idea
+*.iml
+.vscode
+*.log
+.env
+README.md
+deploy

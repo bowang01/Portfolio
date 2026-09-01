@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="admin">
+    <a class="back-link" th:href="@{/admin}">Back to projects</a>
+    <h1 th:text="${pageTitle}">Edit project</h1>
+    <p class="muted">The cover, intro, and test data appear on the public detail page. Only signed-in admins can change them.</p>
+
+    <form class="form stack"
+          th:object="${form}"
+          th:action="${form.id == null} ? @{/admin/projects} : @{/admin/projects/{id}(id=${form.id})}"
+          method="post"
+          enctype="multipart/form-data">
+
+        <div class="flash error" th:if="${#fields.hasErrors('*')}">
+            <p th:each="err : ${#fields.errors('*')}" th:text="${err}">Error</p>
+        </div>
+
+        <label>
+            Title
+            <input type="text" th:field="*{title}" required maxlength="120">
+        </label>
+
+        <label>
+            Summary (shown on the home page)
+            <textarea th:field="*{summary}" rows="3" required maxlength="500"></textarea>
+        </label>
+
+        <label>
+            Description
+            <textarea th:field="*{description}" rows="8" required></textarea>
+        </label>
+
+        <div class="grid-2">
+            <label>
+                Cover image
+                <input type="file" name="coverFile" accept="image/jpeg,image/png,image/webp,image/gif">
+                <input type="hidden" th:field="*{coverImage}">
+            </label>
+            <label>
+                Sort order (lower numbers appear first)
+                <input type="number" th:field="*{sortOrder}">
+            </label>
+        </div>
+        <div class="current-cover" th:if="${form.coverImage}">
+            <img th:src="${form.coverImage}" alt="Current cover">
+        </div>
+
+        <label>
+            Tags (comma separated)
+            <input type="text" th:field="*{tags}" placeholder="Spring Boot, React">
+        </label>
+
+        <div class="grid-2">
+            <label>
+                Live URL
+                <input type="url" th:field="*{liveUrl}" placeholder="https://">
+            </label>
+            <label>
+                Repository
+                <input type="url" th:field="*{githubUrl}" placeholder="https://github.com/...">
+            </label>
+        </div>
+
+        <section class="repeat-block">
+            <div class="repeat-head">
+                <h2>Test accounts</h2>
+                <button type="button" class="btn btn-ghost" data-add="accounts">Add account</button>
+            </div>
+            <div id="accounts">
+                <div class="repeat-row" th:each="item, stat : *{testAccounts}">
+                    <input type="text" th:field="*{testAccounts[__${stat.index}__].roleName}" placeholder="Role">
+                    <input type="text" th:field="*{testAccounts[__${stat.index}__].username}" placeholder="Username">
+                    <input type="text" th:field="*{testAccounts[__${stat.index}__].password}" placeholder="Password">
+                    <input type="text" th:field="*{testAccounts[__${stat.index}__].notes}" placeholder="Notes">
+                    <button type="button" class="link-btn danger" data-remove>Remove</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="repeat-block">
+            <div class="repeat-head">
+                <h2>Test endpoints</h2>
+                <button type="button" class="btn btn-ghost" data-add="endpoints">Add endpoint</button>
+            </div>
+            <div id="endpoints">
+                <div class="repeat-row" th:each="item, stat : *{testEndpoints}">
+                    <input type="text" th:field="*{testEndpoints[__${stat.index}__].method}" placeholder="GET">
+                    <input type="text" th:field="*{testEndpoints[__${stat.index}__].url}" placeholder="/api/...">
+                    <input type="text" th:field="*{testEndpoints[__${stat.index}__].description}" placeholder="Notes">
+                    <button type="button" class="link-btn danger" data-remove>Remove</button>
+                </div>
+            </div>
+        </section>
+
+        <label>
+            Test notes
+            <textarea th:field="*{testNotes}" rows="4" placeholder="Reset time, caveats, and so on"></textarea>
+        </label>
+
+        <div class="actions">
+            <button class="btn" type="submit">Save</button>
+            <a class="btn btn-ghost" th:href="@{/admin}">Cancel</a>
+        </div>
+    </form>
+</main>
+
+<template id="account-row">
+    <div class="repeat-row">
+        <input type="text" name="testAccounts[INDEX].roleName" placeholder="Role">
+        <input type="text" name="testAccounts[INDEX].username" placeholder="Username">
+        <input type="text" name="testAccounts[INDEX].password" placeholder="Password">
+        <input type="text" name="testAccounts[INDEX].notes" placeholder="Notes">
+        <button type="button" class="link-btn danger" data-remove>Remove</button>
+    </div>
+</template>
+<template id="endpoint-row">
+    <div class="repeat-row">
+        <input type="text" name="testEndpoints[INDEX].method" placeholder="GET">
+        <input type="text" name="testEndpoints[INDEX].url" placeholder="/api/...">
+        <input type="text" name="testEndpoints[INDEX].description" placeholder="Notes">
+        <button type="button" class="link-btn danger" data-remove>Remove</button>
+    </div>
+</template>
+<script th:src="@{/js/admin-form.js}"></script>
+</body>
+</html>

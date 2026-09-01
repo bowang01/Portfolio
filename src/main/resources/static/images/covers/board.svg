@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="g" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#18202c"/>
+      <stop offset="100%" stop-color="#31445c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#g)"/>
+  <rect x="160" y="180" width="380" height="640" rx="28" fill="#f3efe6" opacity="0.08"/>
+  <rect x="580" y="180" width="380" height="640" rx="28" fill="#d8ff4f" opacity="0.16"/>
+  <rect x="1000" y="180" width="380" height="640" rx="28" fill="#f3efe6" opacity="0.08"/>
+  <rect x="200" y="260" width="300" height="90" rx="16" fill="#f3efe6" opacity="0.2"/>
+  <rect x="620" y="340" width="300" height="90" rx="16" fill="#d8ff4f" opacity="0.7"/>
+  <rect x="1040" y="420" width="300" height="90" rx="16" fill="#f3efe6" opacity="0.2"/>
+  <text x="180" y="140" fill="#f3efe6" font-size="48" font-family="Georgia, serif">TaskFlow</text>
+</svg>

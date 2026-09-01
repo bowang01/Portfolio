@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Site settings')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="admin">
+    <a class="back-link" th:href="@{/admin}">Back to projects</a>
+    <h1>Site settings</h1>
+    <p class="flash" th:if="${message}" th:text="${message}">Saved</p>
+
+    <form class="form stack" th:object="${settings}" th:action="@{/admin/settings}" method="post">
+        <label>
+            Site name
+            <input type="text" th:field="*{displayName}" required>
+        </label>
+        <label>
+            Home headline
+            <input type="text" th:field="*{tagline}" required>
+        </label>
+        <label>
+            Intro
+            <textarea th:field="*{bio}" rows="5" required></textarea>
+        </label>
+        <div class="grid-2">
+            <label>
+                Email
+                <input type="email" th:field="*{email}">
+            </label>
+            <label>
+                GitHub
+                <input type="url" th:field="*{githubUrl}">
+            </label>
+        </div>
+        <label>
+            Footer text
+            <input type="text" th:field="*{footerText}">
+        </label>
+        <div class="actions">
+            <button class="btn" type="submit">Save</button>
+            <a class="btn btn-ghost" th:href="@{/admin}">Cancel</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>
