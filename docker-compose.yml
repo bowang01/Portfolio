@@ -1,3 +1,6 @@
+# Domain is not hardcoded. Set APP_HOST in .env or Hostinger / GitHub environment.
+# Example: APP_HOST=portfolio.bowang.tech
+
 services:
   mysql:
     image: mysql:8.4
@@ -30,15 +33,34 @@ services:
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
       UPLOAD_DIR: /app/data/uploads
+      APP_HOST: ${APP_HOST:?Set APP_HOST in .env or Hostinger environment}
     volumes:
       - portfolio_uploads:/app/data/uploads
     depends_on:
       mysql:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - default
+      - traefik-proxy
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-proxy
+      - traefik.http.routers.portfolio.rule=Host(`${APP_HOST}`)
+      - traefik.http.routers.portfolio.entrypoints=websecure
+      - traefik.http.routers.portfolio.tls=true
+      - traefik.http.routers.portfolio.tls.certresolver=letsencrypt
+      - traefik.http.routers.portfolio-http.rule=Host(`${APP_HOST}`)
+      - traefik.http.routers.portfolio-http.entrypoints=web
+      - traefik.http.services.portfolio.loadbalancer.server.port=8081
 
 volumes:
   portfolio_mysql:
     name: portfolio_mysql
   portfolio_uploads:
     name: portfolio_uploads
+
+networks:
+  traefik-proxy:
+    name: traefik-proxy
+    external: true

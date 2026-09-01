@@ -7,6 +7,7 @@ public class AppProperties {
 
     private final Admin admin = new Admin();
     private String uploadDir = "./data/uploads";
+    private String publicHost = "";
 
     public Admin getAdmin() {
         return admin;
@@ -18,6 +19,14 @@ public class AppProperties {
 
     public void setUploadDir(String uploadDir) {
         this.uploadDir = uploadDir;
+    }
+
+    public String getPublicHost() {
+        return publicHost;
+    }
+
+    public void setPublicHost(String publicHost) {
+        this.publicHost = publicHost;
     }
 
     public static class Admin {
