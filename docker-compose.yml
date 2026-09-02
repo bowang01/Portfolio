@@ -1,6 +1,3 @@
-# Domain is not hardcoded. Set APP_HOST in .env or Hostinger / GitHub environment.
-# Example: APP_HOST=portfolio.bowang.tech
-
 services:
   mysql:
     image: mysql:8.4
@@ -15,7 +12,7 @@ services:
     volumes:
       - portfolio_mysql:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -34,16 +31,15 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
       UPLOAD_DIR: /app/data/uploads
       APP_HOST: ${APP_HOST:?Set APP_HOST in .env or Hostinger environment}
-      volumes:
-        - portfolio_uploads:/app/data/uploads
-      depends_on:
-        mysql:
-          condition: service_healthy
-      restart: unless-stopped
-
-      networks:
-        - default
-        - proxy
+    volumes:
+      - portfolio_uploads:/app/data/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - default
+      - proxy
 
 networks:
   proxy:
@@ -53,5 +49,6 @@ networks:
 volumes:
   portfolio_mysql:
     name: portfolio_mysql
+
   portfolio_uploads:
     name: portfolio_uploads
