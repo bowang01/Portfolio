@@ -15,7 +15,7 @@ services:
     volumes:
       - portfolio_mysql:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -25,42 +25,33 @@ services:
     build: .
     ports:
       - "8081:8081"
-    environment:
-      PORT: "8081"
-      DB_URL: jdbc:mysql://mysql:3306/portfolio?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=UTC
-      DB_USERNAME: portfolio
-      DB_PASSWORD: ${MYSQL_PASSWORD:-portfolio}
-      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
-      UPLOAD_DIR: /app/data/uploads
-      APP_HOST: ${APP_HOST:?Set APP_HOST in .env or Hostinger environment}
-    volumes:
-      - portfolio_uploads:/app/data/uploads
-    depends_on:
-      mysql:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - default
-      - traefik-proxy
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=traefik-proxy
-      - traefik.http.routers.portfolio.rule=Host(`${APP_HOST}`)
-      - traefik.http.routers.portfolio.entrypoints=websecure
-      - traefik.http.routers.portfolio.tls=true
-      - traefik.http.routers.portfolio.tls.certresolver=letsencrypt
-      - traefik.http.routers.portfolio-http.rule=Host(`${APP_HOST}`)
-      - traefik.http.routers.portfolio-http.entrypoints=web
-      - traefik.http.services.portfolio.loadbalancer.server.port=8081
+        environment:
+          PORT: "8081"
+          DB_URL: jdbc:mysql://mysql:3306/portfolio?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=UTC
+          DB_USERNAME: portfolio
+          DB_PASSWORD: ${MYSQL_PASSWORD:-portfolio}
+          ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+          ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+          UPLOAD_DIR: /app/data/uploads
+          APP_HOST: ${APP_HOST:?Set APP_HOST in .env or Hostinger environment}
+          volumes:
+            - portfolio_uploads:/app/data/uploads
+          depends_on:
+            mysql:
+              condition: service_healthy
+          restart: unless-stopped
+
+          networks:
+            - default
+            - proxy
+
+networks:
+  proxy:
+    name: proxy
+    external: true
 
 volumes:
   portfolio_mysql:
     name: portfolio_mysql
   portfolio_uploads:
     name: portfolio_uploads
-
-networks:
-  traefik-proxy:
-    name: traefik-proxy
-    external: true
