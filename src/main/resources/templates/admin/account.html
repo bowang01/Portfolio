@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Change password')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="admin">
+    <a class="back-link" th:href="@{/admin}">Back to projects</a>
+    <h1>Change password</h1>
+    <p class="flash" th:if="${message}" th:text="${message}">Saved</p>
+    <p class="flash error" th:if="${error}" th:text="${error}">Error</p>
+
+    <form class="form stack" th:object="${form}" th:action="@{/admin/account}" method="post">
+        <label>
+            Current password
+            <input type="password" th:field="*{currentPassword}" autocomplete="current-password" required>
+        </label>
+        <label>
+            New password
+            <input type="password" th:field="*{newPassword}" autocomplete="new-password" required minlength="6">
+        </label>
+        <label>
+            Confirm new password
+            <input type="password" th:field="*{confirmPassword}" autocomplete="new-password" required minlength="6">
+        </label>
+        <div class="actions">
+            <button class="btn" type="submit">Save</button>
+            <a class="btn btn-ghost" th:href="@{/admin}">Cancel</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>
