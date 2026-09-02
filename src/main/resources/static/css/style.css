@@ -226,15 +226,6 @@ th { color: var(--muted); font-weight: 500; font-size: 0.85rem; }
     font-size: 0.78rem;
     padding: 2px 6px;
 }
-.copy {
-    margin-left: 6px;
-    border: 0;
-    background: transparent;
-    color: var(--accent);
-    cursor: pointer;
-    font: inherit;
-    font-size: 0.8rem;
-}
 
 .site-footer {
     border-top: 1px solid var(--line);

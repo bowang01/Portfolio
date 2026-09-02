@@ -50,14 +50,8 @@
                     <tbody>
                     <tr th:each="account : ${project.testAccounts}">
                         <td th:text="${account.roleName}">Role</td>
-                        <td>
-                            <code th:text="${account.username}">user</code>
-                            <button type="button" class="copy" th:attr="data-copy=${account.username}">Copy</button>
-                        </td>
-                        <td>
-                            <code th:text="${account.password}">pass</code>
-                            <button type="button" class="copy" th:attr="data-copy=${account.password}">Copy</button>
-                        </td>
+                        <td><code th:text="${account.username}">user</code></td>
+                        <td><code th:text="${account.password}">pass</code></td>
                         <td th:text="${account.notes}">Notes</td>
                     </tr>
                     </tbody>
@@ -95,6 +89,5 @@
 </main>
 
 <footer th:replace="~{fragments/layout :: footer}"></footer>
-<script th:src="@{/js/copy.js}"></script>
 </body>
 </html>
