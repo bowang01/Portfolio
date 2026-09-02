@@ -2,18 +2,9 @@ package com.portfolio.web.dto;
 
 public class AdminAccountForm {
 
-    private String username;
     private String currentPassword;
     private String newPassword;
     private String confirmPassword;
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public String getCurrentPassword() {
         return currentPassword;

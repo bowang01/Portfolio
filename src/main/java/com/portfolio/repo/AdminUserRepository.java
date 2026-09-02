@@ -9,6 +9,4 @@ import com.portfolio.domain.AdminUser;
 public interface AdminUserRepository extends JpaRepository<AdminUser, Long> {
 
     Optional<AdminUser> findByUsername(String username);
-
-    boolean existsByUsername(String username);
 }

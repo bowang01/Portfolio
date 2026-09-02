@@ -1,5 +1,6 @@
 package com.portfolio.web;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,8 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.portfolio.domain.SiteSettings;
+import com.portfolio.service.AdminUserService;
 import com.portfolio.service.ProjectService;
 import com.portfolio.service.SiteSettingsService;
+import com.portfolio.web.dto.AdminAccountForm;
 import com.portfolio.web.dto.ProjectForm;
 import com.portfolio.web.dto.TestAccountItem;
 import com.portfolio.web.dto.TestEndpointItem;
@@ -29,10 +32,16 @@ public class AdminController {
 
     private final ProjectService projectService;
     private final SiteSettingsService siteSettingsService;
+    private final AdminUserService adminUserService;
 
-    public AdminController(ProjectService projectService, SiteSettingsService siteSettingsService) {
+    public AdminController(
+            ProjectService projectService,
+            SiteSettingsService siteSettingsService,
+            AdminUserService adminUserService
+    ) {
         this.projectService = projectService;
         this.siteSettingsService = siteSettingsService;
+        this.adminUserService = adminUserService;
     }
 
     @InitBinder
@@ -112,6 +121,35 @@ public class AdminController {
         siteSettingsService.save(settings);
         redirectAttributes.addFlashAttribute("message", "Site settings updated");
         return "redirect:/admin/settings";
+    }
+
+    @GetMapping("/account")
+    public String accountForm(Model model) {
+        model.addAttribute("form", new AdminAccountForm());
+        return "admin/account";
+    }
+
+    @PostMapping("/account")
+    public String saveAccount(
+            Authentication authentication,
+            @ModelAttribute("form") AdminAccountForm form,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        String newPassword = form.getNewPassword() == null ? "" : form.getNewPassword();
+        String confirmPassword = form.getConfirmPassword() == null ? "" : form.getConfirmPassword();
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "New password and confirmation do not match");
+            return "admin/account";
+        }
+        try {
+            adminUserService.changePassword(authentication.getName(), form.getCurrentPassword(), newPassword);
+        } catch (IllegalArgumentException ex) {
+            model.addAttribute("error", ex.getMessage());
+            return "admin/account";
+        }
+        redirectAttributes.addFlashAttribute("message", "Password updated");
+        return "redirect:/admin/account";
     }
 
     private String persist(

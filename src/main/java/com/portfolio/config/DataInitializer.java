@@ -2,32 +2,27 @@ package com.portfolio.config;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.portfolio.domain.AdminUser;
 import com.portfolio.domain.SiteSettings;
-import com.portfolio.repo.AdminUserRepository;
 import com.portfolio.repo.SiteSettingsRepository;
+import com.portfolio.service.AdminUserService;
 
 @Component
 public class DataInitializer implements ApplicationRunner {
 
     private final SiteSettingsRepository siteSettingsRepository;
-    private final AdminUserRepository adminUserRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AdminUserService adminUserService;
     private final AppProperties appProperties;
 
     public DataInitializer(
             SiteSettingsRepository siteSettingsRepository,
-            AdminUserRepository adminUserRepository,
-            PasswordEncoder passwordEncoder,
+            AdminUserService adminUserService,
             AppProperties appProperties
     ) {
         this.siteSettingsRepository = siteSettingsRepository;
-        this.adminUserRepository = adminUserRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.adminUserService = adminUserService;
         this.appProperties = appProperties;
     }
 
@@ -46,12 +41,9 @@ public class DataInitializer implements ApplicationRunner {
             siteSettingsRepository.save(settings);
         }
 
-        if (adminUserRepository.count() == 0) {
-            AdminUser admin = new AdminUser();
-            admin.setUsername(appProperties.getAdmin().getUsername());
-            admin.setPasswordHash(passwordEncoder.encode(appProperties.getAdmin().getPassword()));
-            admin.setRole("ADMIN");
-            adminUserRepository.save(admin);
-        }
+        adminUserService.createInitialAdminIfMissing(
+                appProperties.getAdmin().getUsername(),
+                appProperties.getAdmin().getPassword()
+        );
     }
 }

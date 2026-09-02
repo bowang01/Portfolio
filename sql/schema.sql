@@ -51,3 +51,12 @@ CREATE TABLE IF NOT EXISTS project_endpoints (
   PRIMARY KEY (id),
   KEY idx_project_endpoints_project (project_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS admin_users (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  username VARCHAR(80) NOT NULL,
+  password_hash VARCHAR(100) NOT NULL,
+  role VARCHAR(32) NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY uk_admin_users_username (username)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

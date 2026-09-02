@@ -18,34 +18,36 @@ public class AdminUserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional(readOnly = true)
-    public AdminUser requireByUsername(String username) {
-        return adminUserRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("Admin user not found"));
+    @Transactional
+    public void createInitialAdminIfMissing(String username, String rawPassword) {
+        if (adminUserRepository.count() > 0) {
+            return;
+        }
+        String name = username == null ? "" : username.trim();
+        if (name.isBlank() || rawPassword == null || rawPassword.isBlank()) {
+            return;
+        }
+        AdminUser admin = new AdminUser();
+        admin.setUsername(name);
+        admin.setPasswordHash(passwordEncoder.encode(rawPassword));
+        admin.setRole("ADMIN");
+        adminUserRepository.save(admin);
     }
 
     @Transactional
-    public AdminUser update(String currentUsername, String newUsername, String currentPassword, String newPassword) {
-        AdminUser admin = requireByUsername(currentUsername);
+    public void changePassword(String username, String currentPassword, String newPassword) {
+        AdminUser admin = adminUserRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Admin user not found"));
         if (!passwordEncoder.matches(currentPassword, admin.getPasswordHash())) {
             throw new IllegalArgumentException("Current password is incorrect");
         }
-
-        String username = newUsername == null ? "" : newUsername.trim();
-        if (username.isBlank()) {
-            throw new IllegalArgumentException("Username is required");
+        if (newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException("New password is required");
         }
-        if (!username.equalsIgnoreCase(admin.getUsername()) && adminUserRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("That username is already taken");
+        if (newPassword.length() < 6) {
+            throw new IllegalArgumentException("New password must be at least 6 characters");
         }
-        admin.setUsername(username);
-
-        if (newPassword != null && !newPassword.isBlank()) {
-            if (newPassword.length() < 6) {
-                throw new IllegalArgumentException("New password must be at least 6 characters");
-            }
-            admin.setPasswordHash(passwordEncoder.encode(newPassword));
-        }
-        return adminUserRepository.save(admin);
+        admin.setPasswordHash(passwordEncoder.encode(newPassword));
+        adminUserRepository.save(admin);
     }
 }
