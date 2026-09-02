@@ -25,25 +25,25 @@ services:
     build: .
     ports:
       - "8081:8081"
-        environment:
-          PORT: "8081"
-          DB_URL: jdbc:mysql://mysql:3306/portfolio?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=UTC
-          DB_USERNAME: portfolio
-          DB_PASSWORD: ${MYSQL_PASSWORD:-portfolio}
-          ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
-          ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
-          UPLOAD_DIR: /app/data/uploads
-          APP_HOST: ${APP_HOST:?Set APP_HOST in .env or Hostinger environment}
-          volumes:
-            - portfolio_uploads:/app/data/uploads
-          depends_on:
-            mysql:
-              condition: service_healthy
-          restart: unless-stopped
+    environment:
+      PORT: "8081"
+      DB_URL: jdbc:mysql://mysql:3306/portfolio?useUnicode=true&characterEncoding=utf8&connectionCollation=utf8mb4_unicode_ci&serverTimezone=UTC
+      DB_USERNAME: portfolio
+      DB_PASSWORD: ${MYSQL_PASSWORD:-portfolio}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      UPLOAD_DIR: /app/data/uploads
+      APP_HOST: ${APP_HOST:?Set APP_HOST in .env or Hostinger environment}
+      volumes:
+        - portfolio_uploads:/app/data/uploads
+      depends_on:
+        mysql:
+          condition: service_healthy
+      restart: unless-stopped
 
-          networks:
-            - default
-            - proxy
+      networks:
+        - default
+        - proxy
 
 networks:
   proxy:
