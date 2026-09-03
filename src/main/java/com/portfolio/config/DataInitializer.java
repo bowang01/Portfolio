@@ -8,21 +8,25 @@ import org.springframework.transaction.annotation.Transactional;
 import com.portfolio.domain.SiteSettings;
 import com.portfolio.repo.SiteSettingsRepository;
 import com.portfolio.service.AdminUserService;
+import com.portfolio.service.VisitorService;
 
 @Component
 public class DataInitializer implements ApplicationRunner {
 
     private final SiteSettingsRepository siteSettingsRepository;
     private final AdminUserService adminUserService;
+    private final VisitorService visitorService;
     private final AppProperties appProperties;
 
     public DataInitializer(
             SiteSettingsRepository siteSettingsRepository,
             AdminUserService adminUserService,
+            VisitorService visitorService,
             AppProperties appProperties
     ) {
         this.siteSettingsRepository = siteSettingsRepository;
         this.adminUserService = adminUserService;
+        this.visitorService = visitorService;
         this.appProperties = appProperties;
     }
 
@@ -45,5 +49,6 @@ public class DataInitializer implements ApplicationRunner {
                 appProperties.getAdmin().getUsername(),
                 appProperties.getAdmin().getPassword()
         );
+        visitorService.ensureRow();
     }
 }

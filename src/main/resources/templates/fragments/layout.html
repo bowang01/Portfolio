@@ -21,11 +21,25 @@
     </nav>
 </header>
 <footer class="site-footer" th:fragment="footer">
-    <p th:text="${site.footerText}">Browse the work and open a project for details.</p>
-    <p class="muted">
-        <a th:if="${site.email}" th:href="'mailto:' + ${site.email}" th:text="${site.email}"></a>
-        <span th:if="${site.email} and ${site.githubUrl}"> · </span>
-        <a th:if="${site.githubUrl}" th:href="${site.githubUrl}" target="_blank" rel="noreferrer">GitHub</a>
+    <div class="footer-row">
+        <p class="footer-note" th:if="${site.footerText}">
+            <span class="footer-emoji" aria-hidden="true">📝</span>
+            <span th:text="${site.footerText}">Browse the work and open a project for details.</span>
+        </p>
+        <p class="footer-links muted">
+            <a class="footer-link" th:if="${site.email}" th:href="'mailto:' + ${site.email}">
+                <span class="footer-emoji" aria-hidden="true">✉️</span>
+                <span th:text="${site.email}">email</span>
+            </a>
+            <a class="footer-link" th:if="${site.githubUrl}" th:href="${site.githubUrl}" target="_blank" rel="noreferrer">
+                <span class="footer-emoji" aria-hidden="true">🐙</span>
+                <span>GitHub</span>
+            </a>
+        </p>
+    </div>
+    <p class="visitor" th:if="${visitorNumber}">
+        <span class="footer-emoji" aria-hidden="true">👀</span>
+        <span>You are visitor No. <span th:text="${#numbers.formatInteger(visitorNumber, 0)}">1</span></span>
     </p>
 </footer>
 </body>
