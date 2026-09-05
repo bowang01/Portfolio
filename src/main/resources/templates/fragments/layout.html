@@ -37,9 +37,9 @@
             </a>
         </p>
     </div>
-    <p class="visitor" th:if="${visitorNumber}">
-        <span class="footer-emoji" aria-hidden="true">👀</span>
-        <span>You are visitor No. <span th:text="${#numbers.formatInteger(visitorNumber, 0)}">1</span></span>
+    <p class="visitor" th:if="${loggedIn and visitCount != null}">
+        <span class="footer-emoji" aria-hidden="true">👥</span>
+        <span>Visitors: <span th:text="${#numbers.formatInteger(visitCount, 0)}">1</span></span>
     </p>
 </footer>
 </body>

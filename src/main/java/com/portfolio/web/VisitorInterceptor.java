@@ -8,6 +8,7 @@ import com.portfolio.service.VisitorService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Component
 public class VisitorInterceptor implements HandlerInterceptor {
@@ -31,7 +32,13 @@ public class VisitorInterceptor implements HandlerInterceptor {
         if (!"GET".equalsIgnoreCase(request.getMethod()) || isBot(request.getHeader("User-Agent"))) {
             return;
         }
-        modelAndView.addObject("visitorNumber", visitorService.numberFor(request, response));
+        HttpSession session = request.getSession();
+        if (session.getAttribute("visitCounted") == null) {
+            session.setAttribute("visitCounted", Boolean.TRUE);
+            modelAndView.addObject("visitCount", visitorService.incrementAndGet());
+            return;
+        }
+        modelAndView.addObject("visitCount", visitorService.currentTotal());
     }
 
     private static boolean isBot(String userAgent) {
