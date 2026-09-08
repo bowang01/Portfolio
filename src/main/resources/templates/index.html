@@ -14,7 +14,6 @@
     <section class="section">
         <div class="section-head">
             <h2>Work</h2>
-            <p class="muted" th:text="${projects.size()} + ' projects'">0 projects</p>
         </div>
 
         <div class="project-grid" th:if="${!projects.isEmpty()}">
@@ -40,8 +39,7 @@
         </div>
 
         <div class="empty" th:if="${projects.isEmpty()}">
-            <p>No projects yet. Log in to add one.</p>
-            <a class="btn" th:href="@{/admin/login}">Log in</a>
+            <p>No projects yet.</p>
         </div>
     </section>
 </main>
