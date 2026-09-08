@@ -58,6 +58,10 @@ public class Project {
     @OrderBy("id ASC")
     private List<TestEndpoint> testEndpoints = new ArrayList<>();
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("sortOrder ASC, id ASC")
+    private List<ProjectImage> galleryImages = new ArrayList<>();
+
     @PrePersist
     void onCreate() {
         Instant now = Instant.now();
@@ -92,6 +96,11 @@ public class Project {
     public void addTestEndpoint(TestEndpoint endpoint) {
         endpoint.setProject(this);
         testEndpoints.add(endpoint);
+    }
+
+    public void addGalleryImage(ProjectImage image) {
+        image.setProject(this);
+        galleryImages.add(image);
     }
 
     public List<String> tagList() {
@@ -198,5 +207,9 @@ public class Project {
 
     public List<TestEndpoint> getTestEndpoints() {
         return testEndpoints;
+    }
+
+    public List<ProjectImage> getGalleryImages() {
+        return galleryImages;
     }
 }

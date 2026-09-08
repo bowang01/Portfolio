@@ -9,6 +9,54 @@ document.querySelectorAll("[data-add]").forEach((button) => {
     });
 });
 
+const galleryInput = document.getElementById("gallery-files");
+const galleryPending = document.getElementById("gallery-pending");
+if (galleryInput && galleryPending) {
+    const chosen = new DataTransfer();
+
+    const renderPending = () => {
+        galleryPending.replaceChildren();
+        Array.from(chosen.files).forEach((file, index) => {
+            const item = document.createElement("div");
+            item.className = "gallery-admin-item";
+            const img = document.createElement("img");
+            img.alt = file.name;
+            img.src = URL.createObjectURL(file);
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.className = "link-btn danger";
+            remove.textContent = "Remove";
+            remove.addEventListener("click", () => {
+                const next = new DataTransfer();
+                Array.from(chosen.files).forEach((kept, keptIndex) => {
+                    if (keptIndex !== index) {
+                        next.items.add(kept);
+                    }
+                });
+                chosen.items.clear();
+                Array.from(next.files).forEach((kept) => chosen.items.add(kept));
+                galleryInput.files = chosen.files;
+                renderPending();
+            });
+            item.append(img, remove);
+            galleryPending.append(item);
+        });
+    };
+
+    galleryInput.addEventListener("change", () => {
+        Array.from(galleryInput.files).forEach((file) => {
+            const exists = Array.from(chosen.files).some((kept) =>
+                kept.name === file.name && kept.size === file.size && kept.lastModified === file.lastModified
+            );
+            if (!exists) {
+                chosen.items.add(file);
+            }
+        });
+        galleryInput.files = chosen.files;
+        renderPending();
+    });
+}
+
 document.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement) || !target.hasAttribute("data-remove")) return;

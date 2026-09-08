@@ -27,6 +27,15 @@
             </div>
         </div>
 
+        <section class="panel" th:if="${!project.galleryImages.isEmpty()}">
+            <h2>Gallery</h2>
+            <div class="gallery-grid">
+                <a th:each="image : ${project.galleryImages}" th:href="${image.imageUrl}" target="_blank" rel="noreferrer">
+                    <img th:src="${image.imageUrl}" th:alt="${project.title}">
+                </a>
+            </div>
+        </section>
+
         <section class="panel">
             <h2>About</h2>
             <p class="prose" th:text="${project.description}">Description</p>

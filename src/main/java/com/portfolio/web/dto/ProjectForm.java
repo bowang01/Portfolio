@@ -41,6 +41,8 @@ public class ProjectForm {
 
     private List<TestEndpointItem> testEndpoints = new ArrayList<>();
 
+    private List<ProjectImageItem> galleryImages = new ArrayList<>();
+
     public static ProjectForm from(Project project) {
         ProjectForm form = new ProjectForm();
         form.id = project.getId();
@@ -55,6 +57,7 @@ public class ProjectForm {
         form.sortOrder = project.getSortOrder();
         form.testAccounts = new ArrayList<>(project.getTestAccounts().stream().map(TestAccountItem::from).toList());
         form.testEndpoints = new ArrayList<>(project.getTestEndpoints().stream().map(TestEndpointItem::from).toList());
+        form.galleryImages = new ArrayList<>(project.getGalleryImages().stream().map(ProjectImageItem::from).toList());
         return form;
     }
 
@@ -211,5 +214,16 @@ public class ProjectForm {
 
     public void setTestEndpoints(List<TestEndpointItem> testEndpoints) {
         this.testEndpoints = testEndpoints;
+    }
+
+    public List<ProjectImageItem> getGalleryImages() {
+        if (galleryImages == null) {
+            galleryImages = new ArrayList<>();
+        }
+        return galleryImages;
+    }
+
+    public void setGalleryImages(List<ProjectImageItem> galleryImages) {
+        this.galleryImages = galleryImages;
     }
 }

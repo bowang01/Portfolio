@@ -15,6 +15,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.portfolio.domain.SiteSettings;
 import com.portfolio.service.AdminUserService;
 import com.portfolio.service.ProjectService;
@@ -84,10 +87,12 @@ public class AdminController {
             @Valid @ModelAttribute("form") ProjectForm form,
             BindingResult bindingResult,
             @RequestParam(value = "coverFile", required = false) MultipartFile coverFile,
+            @RequestParam(value = "galleryFiles", required = false) MultipartFile[] galleryFiles,
+            @RequestParam(value = "removeGalleryIds", required = false) List<Long> removeGalleryIds,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
-        return persist(form, bindingResult, coverFile, model, redirectAttributes, "Project created");
+        return persist(form, bindingResult, coverFile, galleryFiles, removeGalleryIds, model, redirectAttributes, "Project created");
     }
 
     @PostMapping("/projects/{id}")
@@ -96,11 +101,13 @@ public class AdminController {
             @Valid @ModelAttribute("form") ProjectForm form,
             BindingResult bindingResult,
             @RequestParam(value = "coverFile", required = false) MultipartFile coverFile,
+            @RequestParam(value = "galleryFiles", required = false) MultipartFile[] galleryFiles,
+            @RequestParam(value = "removeGalleryIds", required = false) List<Long> removeGalleryIds,
             Model model,
             RedirectAttributes redirectAttributes
     ) {
         form.setId(id);
-        return persist(form, bindingResult, coverFile, model, redirectAttributes, "Project saved");
+        return persist(form, bindingResult, coverFile, galleryFiles, removeGalleryIds, model, redirectAttributes, "Project saved");
     }
 
     @PostMapping("/projects/{id}/delete")
@@ -156,22 +163,40 @@ public class AdminController {
             ProjectForm form,
             BindingResult bindingResult,
             MultipartFile coverFile,
+            MultipartFile[] galleryFiles,
+            List<Long> removeGalleryIds,
             Model model,
             RedirectAttributes redirectAttributes,
             String successMessage
     ) {
         if (bindingResult.hasErrors()) {
+            restoreGallery(form);
             model.addAttribute("pageTitle", form.getId() == null ? "New project" : "Edit project");
             return "admin/project-form";
         }
         try {
-            projectService.save(form, coverFile);
+            projectService.save(form, coverFile, toGalleryList(galleryFiles), removeGalleryIds);
         } catch (IllegalArgumentException ex) {
+            restoreGallery(form);
             bindingResult.reject("cover", ex.getMessage());
             model.addAttribute("pageTitle", form.getId() == null ? "New project" : "Edit project");
             return "admin/project-form";
         }
         redirectAttributes.addFlashAttribute("message", successMessage);
         return "redirect:/admin";
+    }
+
+    private static List<MultipartFile> toGalleryList(MultipartFile[] galleryFiles) {
+        if (galleryFiles == null || galleryFiles.length == 0) {
+            return List.of();
+        }
+        return Arrays.asList(galleryFiles);
+    }
+
+    private void restoreGallery(ProjectForm form) {
+        if (form.getId() == null) {
+            return;
+        }
+        form.setGalleryImages(ProjectForm.from(projectService.get(form.getId())).getGalleryImages());
     }
 }

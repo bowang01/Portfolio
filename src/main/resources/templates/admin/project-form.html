@@ -7,7 +7,7 @@
 <main class="admin">
     <a class="back-link" th:href="@{/admin}">Back to projects</a>
     <h1 th:text="${pageTitle}">Edit project</h1>
-    <p class="muted">The cover, intro, and test data appear on the public detail page. Only signed-in admins can change them.</p>
+    <p class="muted">The cover appears on the home page. Detail images appear only on the project page.</p>
 
     <form class="form stack"
           th:object="${form}"
@@ -47,6 +47,22 @@
         </div>
         <div class="current-cover" th:if="${form.coverImage}">
             <img th:src="${form.coverImage}" alt="Current cover">
+        </div>
+
+        <label>
+            Detail images
+            <span class="muted">Select several at once, or pick more before you save.</span>
+            <input id="gallery-files" type="file" name="galleryFiles" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+        </label>
+        <div id="gallery-pending" class="gallery-admin"></div>
+        <div class="gallery-admin" th:if="${!form.galleryImages.isEmpty()}">
+            <div class="gallery-admin-item" th:each="image : ${form.galleryImages}">
+                <img th:src="${image.imageUrl}" alt="Detail image">
+                <label class="gallery-remove">
+                    <input type="checkbox" name="removeGalleryIds" th:value="${image.id}">
+                    Remove
+                </label>
+            </div>
         </div>
 
         <label>
