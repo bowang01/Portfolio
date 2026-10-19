@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="admin">
+    <a class="back-link" th:href="@{/admin/interviews}">Back to questions</a>
+    <h1 th:text="${pageTitle}">Edit question</h1>
+
+    <form class="form stack"
+          th:object="${form}"
+          th:action="${form.id == null} ? @{/admin/interviews} : @{/admin/interviews/{id}(id=${form.id})}"
+          method="post">
+
+        <div class="flash error" th:if="${#fields.hasErrors('*')}">
+            <p th:each="err : ${#fields.errors('*')}" th:text="${err}">Error</p>
+        </div>
+
+        <label>
+            Category
+            <select th:field="*{category}">
+                <option th:each="item : ${categories}" th:value="${item}" th:text="${item.displayName()}">Technical</option>
+            </select>
+        </label>
+
+        <label>
+            Question
+            <textarea th:field="*{question}" rows="4" required placeholder="What is the question?"></textarea>
+        </label>
+
+        <label>
+            Answer
+            <textarea th:field="*{answer}" rows="10" placeholder="Write the talking points you want on your phone."></textarea>
+        </label>
+
+        <div class="actions">
+            <button class="btn" type="submit">Save</button>
+            <a class="btn btn-ghost" th:href="@{/admin/interviews}">Cancel</a>
+        </div>
+    </form>
+</main>
+</body>
+</html>

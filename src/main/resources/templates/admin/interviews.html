@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Interview questions')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="admin">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">Prep</p>
+            <h1>Interview questions</h1>
+        </div>
+        <div class="actions">
+            <a class="btn" th:href="@{/admin/interviews/new}">New question</a>
+            <a class="btn btn-ghost" th:href="@{/admin}">Projects</a>
+        </div>
+    </div>
+
+    <p class="flash" th:if="${message}" th:text="${message}">Saved</p>
+
+    <form class="interview-toolbar" method="get" th:action="@{/admin/interviews}">
+        <div class="filter-pills">
+            <a class="pill" th:classappend="${selectedCategory == null} ? ' is-active'"
+               th:href="@{/admin/interviews(q=${query})}">All</a>
+            <a class="pill" th:each="item : ${categories}"
+               th:classappend="${selectedCategory == item} ? ' is-active'"
+               th:href="@{/admin/interviews(category=${item}, q=${query})}"
+               th:text="${item.displayName()}">Technical</a>
+        </div>
+        <label class="interview-search">
+            Search
+            <input type="search" name="q" th:value="${query}" placeholder="Search questions">
+        </label>
+        <input type="hidden" name="category" th:if="${selectedCategory}" th:value="${selectedCategory}">
+        <button class="btn btn-ghost" type="submit">Search</button>
+    </form>
+
+    <div class="interview-list" th:if="${!questions.isEmpty()}">
+        <article class="interview-card" th:each="item : ${questions}">
+            <div class="interview-card-head">
+                <span class="pill" th:text="${item.category.displayName()}">Technical</span>
+                <div class="row-actions">
+                    <a th:href="@{/admin/interviews/{id}/edit(id=${item.id})}">Edit</a>
+                    <form th:action="@{/admin/interviews/{id}/delete(id=${item.id})}" method="post"
+                          onsubmit="return confirm('Delete this question?');">
+                        <button type="submit" class="link-btn danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+            <h2 th:text="${item.question}">Question</h2>
+            <details th:if="${item.answer}">
+                <summary>Show answer</summary>
+                <p class="prose" th:text="${item.answer}">Answer</p>
+            </details>
+            <p class="muted" th:unless="${item.answer}">No answer yet.</p>
+        </article>
+    </div>
+
+    <div class="empty" th:if="${questions.isEmpty()}">
+        <p>No questions yet. Add one you want to review on your phone.</p>
+        <a class="btn" th:href="@{/admin/interviews/new}">New question</a>
+    </div>
+</main>
+</body>
+</html>

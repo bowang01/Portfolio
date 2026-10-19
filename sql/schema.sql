@@ -75,3 +75,14 @@ CREATE TABLE IF NOT EXISTS visit_stats (
   total_visitors BIGINT NOT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS interview_questions (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  question TEXT NOT NULL,
+  category VARCHAR(32) NOT NULL,
+  answer TEXT DEFAULT NULL,
+  created_at DATETIME(6) DEFAULT NULL,
+  updated_at DATETIME(6) DEFAULT NULL,
+  PRIMARY KEY (id),
+  KEY idx_interview_questions_category (category)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
